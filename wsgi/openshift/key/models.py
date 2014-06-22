@@ -6,24 +6,22 @@ class Key(models.Model):
   # TODO link to user and/or group? Create an auth group for each key?
   # last-modified timestamp?
  
-class Question(models.Model):
-  key = models.ForeignKey(Key)
-  shortname = models.CharField(max_length=40)
-  text = models.TextField()
-  trueanswer = models.TextField()
-  falseanswer = models.TextField()
-  taxa = models.ManyToManyField(Taxon, through='Question_Taxon')
-  # link to pictures?
-  # user?
-  # timestamp?
-  
 class Taxon(models.Model):
   key = models.ForeignKey(Key)
   name = models.CharField(max_length=256)
   TOLwebID = models.PositiveIntegerField(null=True) #optional
   description = models.TextField()
   # timestamp?
+  # user? 
+ 
+class Question(models.Model):
+  key = models.ForeignKey(Key)
+  shortname = models.CharField(max_length=40)
+  text = models.TextField()
+  taxa = models.ManyToManyField(Taxon, through='Question_Taxon')
+  # link to pictures?
   # user?
+  # timestamp?
   
 class Question_Taxon(models.Model):
   question = models.ForeignKey(Question)

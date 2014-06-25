@@ -47,30 +47,28 @@ def allquestions(keysession):
       q.useranswer = None # None if the user hasn't answered the question
       
   return questions
-  
-
-"""Returns a queryset of the taxa that haven't been eliminated yet."""  
-def remainingtaxa(keysession):
-  taxa = Taxon.objects.filter(key=keysession.keyID)
-  
-  # for each question that the user has entered, eliminate all of the taxa
-  # that have answers to that question different than what the user provided.
-  # (If we don't know the answer to a question for a taxon, don't eliminate
-  # that question.)
-  for (question, answer) in keysession.answers.items():
-    taxa = taxa.exclude(question_taxon__question__id=question,
-      question_taxon__answer=answer)
-      
-  return taxa
     
 
-"""Returns a queryset of the taxa that have been eliminated.  Optionally 
-supply the remaining taxa, so we don't have to compute it twice."""
-def eliminatedtaxa(keysession, remainingtaxa=None):
+"""Returns a queryset of the taxa that have been eliminated for this key
+session."""
+def eliminatedtaxa(keysession):
   
-  taxa = Taxon.objects.filter(key=keysession.keyID)
-  _remainingtaxa = remainingtaxa or remainingtaxa(keysession)
+  keytaxa = Taxon.objects.filter(key=keysession.keyID) # taxa for this key
+  taxa = Taxon.objects.none() # empty QuerySet
   
-  return taxa.exclude(pk__in=_remainingtaxa)
+  # union of taxa that have an answer that differs from a user-supplied answer
+  for (question, answer) in keysession.answers.items():
+    taxa = taxa | keytaxa.filter(
+      question_taxon__question=question,
+      question_taxon__answer=not answer)
+      
+  return taxa
   
-  
+
+"""Returns a queryset of the taxa that are remaining for this key session. 
+Optionally supply the eliminated taxa, so we don't have to compute it twice."""
+def remainingtaxa(keysession, eliminated=None):
+  _eliminated = eliminated or eliminatedtaxa(keysession)
+  return Taxon.objects.filter(key=keysession.keyID).exclude(pk__in=_eliminated)
+
+

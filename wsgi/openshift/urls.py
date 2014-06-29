@@ -10,8 +10,10 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'views.home', name='home'),
-    # url(r'^$', 'openshift.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-    
+
+    url(r'^key/(\d+)', 'key.views.keyview'),
+    url(r'^key/updatestate', 'key.views.updatestate'),
+
     url(r'^admin/', include(admin.site.urls)),
+    
 ) 

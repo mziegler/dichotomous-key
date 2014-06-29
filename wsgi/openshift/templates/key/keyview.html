@@ -1,0 +1,18 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ key.name|escape }}</title>
+  <script type="text/javascript" src="{% static 'jquery-1.11.1.min.js' %}"></script>
+  <script type="text/javascript">
+    var keyID = {{ key.id }};
+  </script>
+  <script type="text/javascript" src="{% static 'keydriver.js' %}"></script>
+</head>
+<body>
+  <div id="keyinfo">
+    <h3>{{ key.name|escape }}</h3>
+    <p>{{ key.description|escape }}</p>
+  </div>
+</body>
+</html>

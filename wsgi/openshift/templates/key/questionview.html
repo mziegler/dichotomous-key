@@ -1,0 +1,4 @@
+{% for q in questions %}
+  <a class="questionlink{% if q.hasuseranswer %}answered{% endif %}" questionID="{{ q.id|escape }}" href="javascript:void(0)">{{ q.shortname|escape }}</a>
+{% endfor %}
+

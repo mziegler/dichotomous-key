@@ -33,9 +33,20 @@ function updateState()
   });
 }
 
+function updateQuestionView()
+{
+  $.post("questions", JSON.stringify(state))
+  .done( function(data)
+  {
+    $("#questionlist").html(data);
+  });
+}
+
+
 // update the parts of the interface that depend on the key state
 function updateViews()
 {
+  updateQuestionView();
   //TODO
 }
 

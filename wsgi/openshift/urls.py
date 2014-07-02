@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 
     url(r'^key/(\d+)', 'key.views.keyview'),
     url(r'^key/updatestate', 'key.views.updatestate'),
+    url(r'^key/questions', 'key.views.questionview'),
 
     url(r'^admin/', include(admin.site.urls)),
     

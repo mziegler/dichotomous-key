@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.decorators.csrf import csrf_exempt
 
 import key.keylogic as keylogic
-from key.models import Key
+from key.models import Key, Question
 
 
 
@@ -65,6 +65,9 @@ def updatestate(request):
   # look up remaining and eliminated taxa
   eliminatedtaxa = keylogic.eliminatedtaxa(state)
   remainingtaxa = keylogic.remainingtaxa(state, eliminatedtaxa)
+  
+  # suggest a question
+  suggestedquestion = keylogic.suggestquestion(state)
 
   # package up data into JSON response
   response = HttpResponse()
@@ -74,6 +77,7 @@ def updatestate(request):
     'action': [],
     'remainingtaxa': [r.id for r in remainingtaxa],
     'eliminatedtaxa': [e.id for e in eliminatedtaxa],
+    'suggestedquestion': suggestedquestion,
     })
   print ('response', s)
   response.write(s)
@@ -87,18 +91,37 @@ def keyview(request, keyID):
   try:
     key = Key.objects.get(pk=int(keyID))
   except (ValueError, ObjectDoesNotExist):
-    raise HttpResponse("Can't find a key with this keyID!")
+    return HttpResponse("Can't find a key with this keyID!")
   
   return render(request, 'key/keyview.html', {'key':key})
   
   
 
+"""Lists the questions in the key, as well as which questions the user has
+already answered."""
 @csrf_exempt
-def questionview(request):
+def questionlist(request):
   state = loadstate(request)
   questions = keylogic.allquestions(state)
-  return render(request, 'key/questionview.html', {'questions': questions})
+  return render(request, 'key/questionlist.html', {'questions': questions})
 
 
-
-
+"""Show a question"""
+@csrf_exempt
+def questionview(request, questionID):
+  state = loadstate(request)
+  
+  # get the question from the database
+  try:
+    question = Question.objects.get(pk=int(questionID))
+  except (ValueError, ObjectDoesNotExist):
+    return HttpResponse("Can't find a question for this ID!")
+  
+  # see if the user has already answered the question
+  if question.id in state.answers:
+    question.hasuseranswer = True
+    question.useranswer = state.answers[question.id]
+  else:
+    question.hasuseranswer = False
+    
+  return render(request, 'key/questionview.html', {'question': question})

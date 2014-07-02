@@ -49,6 +49,20 @@ def allquestions(keystate):
   return questions
     
 
+
+"""Suggest a question for the user to answer.  Possibly change this later
+to use decision trees and calculate information gain for each question.
+Return -1 if there are no questions left."""    
+def suggestquestion(keystate):
+  q = Question.objects.filter(key=keystate.keyID)\
+    .exclude(id__in=keystate.answers.keys())[0]
+  if q:
+    return q.id
+  else:
+    return -1
+  
+
+
 """Returns a queryset of the taxa that have been eliminated for this key
 state."""
 def eliminatedtaxa(keystate):

@@ -10,6 +10,7 @@ var state = {
   "remainingtaxa": [], // list of remaining taxon ID's
   "eliminatedtaxa": [], // list of eliminated taxon ID's
   "action": [], // tuple describing state modification for the server to do
+  "suggestedquestion": -1, // ID of next suggested question (basically arbitrary for now)
   }
   
 // Send the old state to the server (with keyID, useranswers, and action).
@@ -33,9 +34,10 @@ function updateState()
   });
 }
 
-function updateQuestionView()
+
+function updateQuestionList()
 {
-  $.post("questions", JSON.stringify(state))
+  $.post("questionlist", JSON.stringify(state))
   .done( function(data)
   {
     $("#questionlist").html(data);
@@ -43,11 +45,20 @@ function updateQuestionView()
 }
 
 
+function showQuestion(questionID)
+{
+  $.post("question/" + questionID, JSON.stringify(state))
+  .done( function(data)
+  {
+    $("#mainQTview").html(data);
+  });
+}
+
 // update the parts of the interface that depend on the key state
 function updateViews()
 {
-  updateQuestionView();
-  //TODO
+  updateQuestionList();
+  showQuestion(state.suggestedquestion);
 }
 
 function answerTrue(questionID)

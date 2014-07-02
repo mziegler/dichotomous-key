@@ -44,13 +44,22 @@ function updateQuestionList()
   });
 }
 
+function updateTaxaList()
+{
+  $.post("taxalist", JSON.stringify(state))
+  .done( function(data)
+  {
+    $("#taxalist").html(data);
+  });
+}
+
 
 function showQuestion(questionID)
 {
   $.post("question/" + questionID, JSON.stringify(state))
   .done( function(data)
   {
-    $("#mainQTview").html(data);
+    $("#mainpanel").html(data);
   });
 }
 
@@ -58,6 +67,7 @@ function showQuestion(questionID)
 function updateViews()
 {
   updateQuestionList();
+  updateTaxaList();
   showQuestion(state.suggestedquestion);
 }
 

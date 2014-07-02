@@ -1,0 +1,14 @@
+{% if remainingtaxa %}
+  <b>Remaining taxa</b>
+  {% for t in remainingtaxa %}
+    <a href="javascript:void(0);" id="taxon{{ t.id|escape }}" 
+    class="taxon remainingtaxon" taxonID="{{ t.id|escape }}">{{ t.name|escape }}</a> 
+  {% endfor %}
+{% endif %}
+{% if eliminatedtaxa %}
+  <br /><b>Eliminated taxa</b>
+  {% for t in eliminatedtaxa %}
+    <a href="javascript:void(0);" id="taxon{{ t.id|escape }}" 
+    class="taxon eliminatedtaxon" taxonID="{{ t.id|escape }}">{{ t.name|escape }}</a> 
+  {% endfor %}
+{% endif %}

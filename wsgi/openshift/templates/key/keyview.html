@@ -13,8 +13,11 @@
   <div id="keyinfo">
     <h3>{{ key.name|escape }}</h3>
     <p>{{ key.description|escape }}</p>
-    <div id="mainQTview"><!--a single question or single taxon to view, selected by the user--></div>
-    <div id="questionlist"><!--list of questions in the key, populated by AJAX--></div>
+    
+    <!-- panels populated by AJAX -->
+    <div id="mainpanel"><!--a single question or single taxon to view, selected by the user--></div>
+    <div id="questionlist"><!--list of questions in the key--></div>
+    <div id="taxalist"><!--list of remaining and eliminated taxa--></div>
   </div>
 </body>
 </html>

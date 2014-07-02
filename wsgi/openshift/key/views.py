@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.decorators.csrf import csrf_exempt
 
 import key.keylogic as keylogic
-from key.models import Key, Question
+from key.models import Key, Question, Taxon
 
 
 
@@ -33,6 +33,9 @@ def loadstate(request, parsedJSON=None):
   except AttributeError:
     pass # no 'useranswers' was provided (probably), do nothing
     
+  state.remainingtaxa = instate.get('remainingtaxa', [])
+  state.eliminatedtaxa = instate.get('eliminatedtaxa', [])
+    
   return state
     
 
@@ -44,7 +47,7 @@ def updatestate(request):
   
   
   instate = loadstateJSON(request)
-  state = None
+  #state = None
   try:
     state = loadstate(request, instate)
   except ValidationError as err:
@@ -109,7 +112,10 @@ def questionlist(request):
 """Show a question"""
 @csrf_exempt
 def questionview(request, questionID):
-  state = loadstate(request)
+  try:
+    state = loadstate(request)
+  except ValidationError as err:
+    return HttpResponse(err.message, status=400)
   
   # get the question from the database
   try:
@@ -125,3 +131,19 @@ def questionview(request, questionID):
     question.hasuseranswer = False
     
   return render(request, 'key/questionview.html', {'question': question})
+  
+
+"""Show a list of remaining and eliminated taxa"""
+@csrf_exempt
+def taxalist(request):
+  try:
+    state = loadstate(request)
+  except ValidationError as err:
+    return HttpResponse(err.message, status=400)
+    
+  remainingtaxa = Taxon.objects.filter(id__in=state.remainingtaxa)
+  eliminatedtaxa = Taxon.objects.filter(id__in=state.eliminatedtaxa)
+  
+  return render(request, 'key/taxalist.html', 
+    {'remainingtaxa': remainingtaxa, 'eliminatedtaxa': eliminatedtaxa})
+  

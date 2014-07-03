@@ -12,6 +12,9 @@ var state = {
   "action": [], // tuple describing state modification for the server to do
   "suggestedquestion": -1, // ID of next suggested question (basically arbitrary for now)
   }
+
+// currently selected question
+var selectedquestion = -1;
   
 // Send the old state to the server (with keyID, useranswers, and action).
 // The server computes a new state, modifying useranswers according to the action,
@@ -41,6 +44,7 @@ function updateQuestionList()
   .done( function(data)
   {
     $("#questionlist").html(data);
+    hilightSelectedQuestion();
   });
 }
 
@@ -54,10 +58,17 @@ function updateTaxaList()
 }
 
 
-function showQuestion(questionID)
+function hilightSelectedQuestion()
 {
   $(".questionlink").removeClass("selectedQuestion");
-  $("#question" + questionID).addClass("selectedQuestion");
+  $("#question" + selectedQuestion).addClass("selectedQuestion");
+}
+
+// show a question in the main pane
+function showQuestion(questionID)
+{
+  selectedQuestion = questionID;
+  hilightSelectedQuestion();
   $.post("question/" + questionID, JSON.stringify(state))
   .done( function(data)
   {
@@ -93,8 +104,21 @@ function removeAnswer(questionID)
 
 $(document).ready( function()
 {
+  // show a question when a question link is clicked
+  $("#questionlist").on("click", ".questionlink", function() {
+    showQuestion($(this).attr("questionID"));
+  });
+
+  $("#mainpanel").on("click", "#answeryes", function() {
+    answerTrue($(this).attr("questionID"));
+  });
+  
+  $("#mainpanel").on("click", "#answerno", function() {
+    answerFalse($(this).attr("questionID"));
+  });
+
   updateState();
-  answerTrue(1);
-  answerFalse(2);
-  removeAnswer(1);
+  //answerTrue(1);
+  //answerFalse(2);
+  //removeAnswer(1);
 });

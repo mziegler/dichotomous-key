@@ -1,5 +1,5 @@
 <span id="questiontext">{{ question.text }}</span>
-<a id="answeryes" class="answerlink
+<a id="answeryes" questionID="{{ question.id }}" class="answerlink
   {% if question.hasuseranswer %}
     {% if question.useranswer %}
       selected
@@ -10,7 +10,7 @@
     unanswered
   {% endif %}" href="javascript:void(0);">Yes</a>
   
-<a id="answeryes" class="answerlink
+<a id="answerno" questionID="{{ question.id }}" class="answerlink
   {% if question.hasuseranswer %}
     {% if question.useranswer %}
       notselected

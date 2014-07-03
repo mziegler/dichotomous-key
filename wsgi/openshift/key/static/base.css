@@ -19,3 +19,11 @@ a.questionlink {
 a.taxon {
   padding: 3px;
 }
+
+
+/* main panel */
+#mainpanel {
+  margin: 5px;
+  padding: 10px;
+  background: #EEE;
+}

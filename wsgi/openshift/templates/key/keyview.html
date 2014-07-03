@@ -3,6 +3,7 @@
 <html>
 <head>
   <title>{{ key.name|escape }}</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}" />
   <script type="text/javascript" src="{% static 'jquery-1.11.1.min.js' %}"></script>
   <script type="text/javascript">
     var keyID = {{ key.id }};

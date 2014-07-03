@@ -56,6 +56,8 @@ function updateTaxaList()
 
 function showQuestion(questionID)
 {
+  $(".questionlink").removeClass("selectedQuestion");
+  $("#question" + questionID).addClass("selectedQuestion");
   $.post("question/" + questionID, JSON.stringify(state))
   .done( function(data)
   {
